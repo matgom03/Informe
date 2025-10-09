@@ -52,20 +52,22 @@ if 'df_transformado' in st.session_state:
         for var in columnas_a_imputar:
             st.markdown(f"#### {var}: Comparación antes y después de imputación")
 
-            fig, axes = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
+            fig, axes = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
 
             sns.countplot(x=df_filtrado[var], ax=axes[0], palette="pastel")
             axes[0].set_title(f"{var} - Antes de imputar")
             axes[0].set_ylabel("Frecuencia")
-            axes[0].tick_params(axis='x', rotation=45)
+            axes[0].tick_params(axis='x', rotation=60)
+            axes[0].set_xticklabels(axes[0].get_xticklabels(), ha='right')
 
             sns.countplot(x=df_imputado[var], ax=axes[1], palette="muted")
             axes[1].set_title(f"{var} - Después de imputar (moda)")
             axes[1].set_ylabel("Frecuencia")
-            axes[1].tick_params(axis='x', rotation=45)
+            axes[1].tick_params(axis='x', rotation=60)
+            axes[1].set_xticklabels(axes[1].get_xticklabels(), ha='right')
 
             plt.suptitle(f"Distribución de {var}", fontsize=14, weight="bold")
-            plt.tight_layout()
+            plt.subplots_adjust(bottom=0.3)  # Aumenta el espacio inferior para ver etiquetas
             st.pyplot(fig)
 
             # Comparación estadística (Chi²)
@@ -109,23 +111,39 @@ if 'df_transformado' in st.session_state:
         variables = ["Workclass", "Occupation"]
 
         for var in variables:
-  
-            fig, axes = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
 
-            sns.countplot(x=df_filtrado[var], ax=axes[0], palette="pastel",
-                            order=df_filtrado[var].dropna().unique())
+            fig, axes = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
+
+            # Gráfico antes de imputar
+            sns.countplot(
+                x=df_filtrado[var], 
+                ax=axes[0], 
+                palette="pastel",
+                order=df_filtrado[var].dropna().unique()
+            )
             axes[0].set_title(f"{var} - Antes de imputar")
             axes[0].set_ylabel("Frecuencia")
+            axes[0].tick_params(axis='x', rotation=60)
+            axes[0].set_xticklabels(axes[0].get_xticklabels(), ha='right')
 
-            sns.countplot(x=df_filtrado[f"{var}_hd"], ax=axes[1], palette="muted",
-                            order=df_filtrado[var].dropna().unique())
+            # Gráfico después de imputar (hot-deck)
+            sns.countplot(
+                x=df_filtrado[f"{var}_hd"], 
+                ax=axes[1], 
+                palette="muted",
+                order=df_filtrado[var].dropna().unique()
+            )
             axes[1].set_title(f"{var} - Después de imputar (Hot-deck)")
             axes[1].set_ylabel("Frecuencia")
+            axes[1].tick_params(axis='x', rotation=60)
+            axes[1].set_xticklabels(axes[1].get_xticklabels(), ha='right')
 
+            # Título y ajuste
             plt.suptitle(f"Comparación de distribución en {var}", fontsize=14, weight="bold")
-            st.pyplot(fig)
+            plt.subplots_adjust(bottom=0.3)  # Espacio inferior para etiquetas
 
-    
+            # Mostrar en Streamlit
+            st.pyplot(fig)
             orig_counts = df_filtrado[var].value_counts().sort_index()
             imp_counts = df_filtrado[f"{var}_hd"].value_counts().sort_index()
             orig_counts, imp_counts = orig_counts.align(imp_counts, fill_value=0)
