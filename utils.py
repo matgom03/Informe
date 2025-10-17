@@ -473,7 +473,7 @@ def analizar_colinealidad_y_correlaciones(df, umbral_vif=10, mostrar_graficos=Tr
         st.write("Matriz de correlación Cramérs V:")
         st.dataframe(matriz_cramer)
 
-    return resultados
+    return resultados['vif']
 def winsorizar_outliers(df, variables=None, lower_percentile=0.01, upper_percentile=0.99, mostrar_resumen=True):
     if variables is None:
         variables = ['Capital-gain', 'Capital-loss', 'Hours-per-week']
